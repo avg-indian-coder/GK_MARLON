@@ -150,5 +150,150 @@ class Simulation:
         traci.trafficlight.setPhase("TL", yellow_phase_code)
 
     def _set_green_phase(self, action_number):
-        """"""
+        """
+        Activate the correct green light combination in sumo
+        """
+        if action_number == 0:
+            traci.trafficlight.setPhase("TL", PHASE_NS_GREEN)
+        elif action_number == 1:
+            traci.trafficlight.setPhase("TL", PHASE_NSL_GREEN)
+        elif action_number == 2:
+            traci.trafficlight.setPhase("TL", PHASE_EW_GREEN)
+        elif action_number == 3:
+            traci.trafficlight.setPhase("TL", PHASE_EWL_GREEN)
+
+    def _get_queue_length(self):
+        """
+        Retrieve the number of cars with speed = 0 in every incoming lane
+        """
+        halt_N = traci.edge.getLastStepHaltingNumber("N2TL")
+        halt_S = traci.edge.getLastStepHaltingNumber("S2TL")
+        halt_E = traci.edge.getLastStepHaltingNumber("E2TL")
+        halt_W = traci.edge.getLastStepHaltingNumber("W2TL")
+        queue_length = halt_N + halt_E + halt_S + halt_W
+        return queue_length
+    
+    def _get_state(self):
+        """
+        Retrieve the state of the intersection from sumo, in the form of cell occupancy
+        """
+        state = np.zeros(self._num_states)
+        car_list = traci.vehicle.getIDList()
+
+        for car_id in car_list:
+            lane_pos = traci.vehicle.getLanePosition(car_id)
+            lane_id = traci.vehicle.getLaneID(car_id)
+            lane_pos = 750 - lane_pos
+
+            # distance in meters from the traffic light -> mapping into cells
+            if lane_pos < 7:
+                lane_cell = 0
+            elif lane_pos < 14:
+                lane_cell = 1
+            elif lane_pos < 21:
+                lane_cell = 2
+            elif lane_pos < 28:
+                lane_cell = 3
+            elif lane_pos < 40:
+                lane_cell = 4
+            elif lane_pos < 60:
+                lane_cell = 5
+            elif lane_pos < 100:
+                lane_cell = 6
+            elif lane_pos < 160:
+                lane_cell = 7
+            elif lane_pos < 400:
+                lane_cell = 8
+            elif lane_pos <= 750:
+                lane_cell = 9
+
+            # finding the lane where the car is located 
+            # x2TL_3 are the "turn left only" lanes
+            if lane_id == "W2TL_0" or lane_id == "W2TL_1" or lane_id == "W2TL_2":
+                lane_group = 0
+            elif lane_id == "W2TL_3":
+                lane_group = 1
+            elif lane_id == "N2TL_0" or lane_id == "N2TL_1" or lane_id == "N2TL_2":
+                lane_group = 2
+            elif lane_id == "N2TL_3":
+                lane_group = 3
+            elif lane_id == "E2TL_0" or lane_id == "E2TL_1" or lane_id == "E2TL_2":
+                lane_group = 4
+            elif lane_id == "E2TL_3":
+                lane_group = 5
+            elif lane_id == "S2TL_0" or lane_id == "S2TL_1" or lane_id == "S2TL_2":
+                lane_group = 6
+            elif lane_id == "S2TL_3":
+                lane_group = 7
+            else:
+                lane_group = -1
+
+            if lane_group >= 1 and lane_group <= 7:
+                car_position = int(str(lane_group) + str(lane_cell))  # composition of the two postion ID to create a number in interval 0-79
+                valid_car = True
+            elif lane_group == 0:
+                car_position = lane_cell
+                valid_car = True
+            else:
+                valid_car = False  # flag for not detecting cars crossing the intersection or driving away from it
+
+            if valid_car:
+                state[car_position] = 1  # write the position of the car car_id in the state array in the form of "cell occupied"
+
+        return state
+
+    def _replay(self):
+        """
+        Retrieve a group of samples from the memory and for each of them update the learning equation, then train
+        """
+        batch = self._Memory.get_samples(self._Model.batch_size)
+
+        if len(batch) > 0: # if the memory is full enough
+            states = np.array([val[0] for val in batch])
+            next_states = np.array([val[3] for val in batch]) 
+
+            # prediction
+            q_s_a = self._Model.predict_batch(states)
+            q_s_a_d = self._Model.predict_batch(next_states)
+
+            # setup training arrays
+            x = np.zeros((len(batch), self._num_states))
+            y = np.zeros((len(batch), self._num_actions))
+
+            for i, b in enumerate(batch):
+                state, action, reward, _ = b[0], b[1], b[2], b[3] # extract data from one sample
+                current_q = q_s_a[i] # get the predicted value of state
+                current_q[action] = reward + self._gamma * np.amax(q_s_a_d[i]) # update Q(state, action)
+                x[i] = state
+                y[i] = current_q # Q(state) that includes the updated action value
+
+            self._Model.train_batch(x, y) # train the NN
+
+    def _save_episode_stats(self):
+        """
+        Save the stats of the episode to plot the graphs at the end of the session
+        """
+        self._reward_store.append(self._sum_neg_reward) # how much negative reward in this episode
+        self._cumulative_wait_store.append(self._sum_waiting_time) # total number of seconds waited by cars in this episode
+        self._avg_queue_length_store.append(self._sum_queue_length / self._max_steps) # average number of queued cars per step, in the episode
+
+    @property
+    def reward_store(self):
+        return self._reward_store
+    
+    @property
+    def cumulative_wait_store(self):
+        return self._cumulative_wait_store
+    
+    @property
+    def avg_queue_length_store(self):
+        return self._avg_queue_length_store
+
+
+        
+
+
+
+
+
 
