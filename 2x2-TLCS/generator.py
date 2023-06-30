@@ -1,9 +1,11 @@
 import numpy as np
 import math
-import matplotlib.pyplot as plt
 import os
 
 def generator(net, route, end_time, no_vehicles):
+    '''
+    
+    '''
     cmd_code = f'python3 "%SUMO_HOME%/tools/randomTrips.py" --validate -r {route} --end {no_vehicles} -n {net}'
     os.system(cmd_code)
 
@@ -50,15 +52,10 @@ def generator(net, route, end_time, no_vehicles):
     f.writelines(l)
 
     return car_gen_steps
-    """ def plots(plot, bins):
-        plt.hist(car_gen_steps, bins=bins)
-        plt.show()
-
-    if plot:
-        plots(plot, bins) """
 
 
 if __name__ == '__main__':
+    import matplotlib.pyplot as plt
     car_gen_steps = generator('network/2x2.net.xml', 'network/routes.rou.xml', 5400, 1000)
 
     if True:
