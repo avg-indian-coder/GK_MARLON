@@ -4,7 +4,7 @@ import os
 
 def generator(net, route, end_time, no_vehicles):
     '''
-    
+    Generate the route file based on above the parameters
     '''
     cmd_code = f'python3 "%SUMO_HOME%/tools/randomTrips.py" --validate -r {route} --end {no_vehicles} -n {net}'
     os.system(cmd_code)
@@ -35,8 +35,6 @@ def generator(net, route, end_time, no_vehicles):
 
     car_gen_steps = np.rint(car_gen_steps)  # round every value to int -> effective steps when a car will be generated
 
-    #for step in car_gen_steps:
-        #print(step)
     print(len(car_gen_steps))
 
     # car_gen_steps now contains the sorted times according to the Weibull distribution
