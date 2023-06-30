@@ -13,7 +13,12 @@ import traci
 if __name__ == '__main__':
     max_steps = 5400
     sumoBinary = sumolib.checkBinary('sumo-gui')
-    sumo_cmd = [sumoBinary, "-c", 'nets\2way-single-intersection\single-intersection-train-uniform.sumocfg', "--no-step-log", "true", "--waiting-time-memory", str(max_steps)]
+    sumo_cmd = [sumoBinary, "-c", 'network/sumo_config.sumocfg', "--no-step-log", "true", "--waiting-time-memory", str(max_steps)]
+
+    traci.start(sumo_cmd)
+    traci.simulationStep()
+    print(traci.trafficlight.getIDList())
+
 
     #define the model
     #define memory for replay

@@ -1,0 +1,14 @@
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vehicle id="1" depart="3.00">
+        <route edges="v22 h12 h11"/>
+    </vehicle>
+    <vehicle id="2" depart="3.00">
+        <route edges="-v11 -h12 -v22"/>
+    </vehicle>
+    <vehicle id="3" depart="25.00">
+        <route edges="v23 -h23"/>
+    </vehicle>
+    <vehicle id="5" depart="27.00">
+        <route edges="h22 v12"/>
+    </vehicle>
+</routes>
