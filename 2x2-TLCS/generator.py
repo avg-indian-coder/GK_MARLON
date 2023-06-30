@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 import os
 
-def generator(net, route, end_time, no_vehicles, plot=False, bins=1000):
+def generator(net, route, end_time, no_vehicles):
     cmd_code = f'python3 "%SUMO_HOME%/tools/randomTrips.py" --validate -r {route} --end {no_vehicles} -n {net}'
     os.system(cmd_code)
 
@@ -49,8 +49,18 @@ def generator(net, route, end_time, no_vehicles, plot=False, bins=1000):
     f = open(route, "w")
     f.writelines(l)
 
-    if plot:
-        plt.hist(car_gen_steps, bins=100)
+    return car_gen_steps
+    """ def plots(plot, bins):
+        plt.hist(car_gen_steps, bins=bins)
         plt.show()
 
-generator('network/2x2.net.xml', 'network/routes.rou.xml', 5400, 10000)
+    if plot:
+        plots(plot, bins) """
+
+
+if __name__ == '__main__':
+    car_gen_steps = generator('network/2x2.net.xml', 'network/routes.rou.xml', 5400, 1000)
+
+    if True:
+        plt.hist(car_gen_steps, bins = 108)
+        plt.show()
