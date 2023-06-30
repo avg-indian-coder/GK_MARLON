@@ -19,8 +19,6 @@ def generator(net, route, end_time, no_vehicles):
 
     vehicle_count = len(l[line_idx + 1:]) / 3 # count of the vehicles in the route
 
-    print(vehicle_count)
-
     # get a weibull distribution too now, assume the simulation starts at 0 and ends at end_time
     timings = np.random.weibull(2, int(vehicle_count))
     timings = np.sort(timings)
@@ -34,8 +32,6 @@ def generator(net, route, end_time, no_vehicles):
         car_gen_steps = np.append(car_gen_steps, ((max_new - min_new) / (max_old - min_old)) * (value - max_old) + max_new)
 
     car_gen_steps = np.rint(car_gen_steps)  # round every value to int -> effective steps when a car will be generated
-
-    print(len(car_gen_steps))
 
     # car_gen_steps now contains the sorted times according to the Weibull distribution
     # now the job is to replace the time-steps in the xml file with the ones in car_gen_steps
@@ -54,8 +50,11 @@ def generator(net, route, end_time, no_vehicles):
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    car_gen_steps = generator('network/2x2.net.xml', 'network/routes.rou.xml', 5400, 1000)
+    car_gen_steps = generator('network/3x3.net.xml', 'network/routes.rou.xml', 5400, 2000)
 
-    if True:
-        plt.hist(car_gen_steps, bins = 108)
+    if False:
+        plt.title("Weibull distribution (2000 cars generated)")
+        plt.xlabel("Time steps")
+        plt.ylabel("Number of cars generated")
+        plt.hist(car_gen_steps, bins = 54)
         plt.show()
