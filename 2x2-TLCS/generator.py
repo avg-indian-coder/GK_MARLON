@@ -1,12 +1,16 @@
 import numpy as np
 import math
 import os
+import platform
 
 def generator(net, route, end_time, no_vehicles):
     '''
     Generate the route file based on above the parameters
     '''
-    cmd_code = f'python3 "%SUMO_HOME%/tools/randomTrips.py" --validate -r {route} --end {no_vehicles} -n {net}'
+    if platform.system() == 'Windows':
+        cmd_code = f'python3 "%SUMO_HOME%/tools/randomTrips.py" --validate -r {route} --end {no_vehicles} -n {net}'
+    else:
+        cmd_code = f'SUMO_HOME/tools/randomTrips.py --validate -r {route} --end {no_vehicles} -n {net}'
     os.system(cmd_code)
 
     f = open(route, "r+")
@@ -50,7 +54,7 @@ def generator(net, route, end_time, no_vehicles):
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    car_gen_steps = generator('network/3x3.net.xml', 'network/routes.rou.xml', 5400, 2000)
+    car_gen_steps = generator('network/2x2.net.xml', 'network/routes.rou.xml', 5400, 2000)
 
     if False:
         plt.title("Weibull distribution (2000 cars generated)")
