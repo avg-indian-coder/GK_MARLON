@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2023-07-10 20:24:58 by Eclipse SUMO sumo Version 1.17.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="network\r1.net.xml"/>
+        <route-files value="network\r1_route.rou.xml"/>
+    </input>
+
+    <output>
+        <queue-output value="C:\Users\gkrit\projects\real_marlon\GK_MARLON\2x2-TLCS\models\model_26\QueueInfo.xml"/>
+        <summary-output value="C:\Users\gkrit\projects\real_marlon\GK_MARLON\2x2-TLCS\models\model_26\Summary.xml"/>
+        <tripinfo-output value="{path}VehicleInfo.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+    </time>
+
+    <processing>
+        <time-to-teleport value="-1"/>
+        <waiting-time-memory value="5400"/>
+    </processing>
+
+    <report>
+        <no-step-log value="true"/>
+    </report>
+
+    <traci_server>
+        <remote-port value="53318"/>
+    </traci_server>
+
+</configuration>
+-->
+
+<queue-export xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/queue_file.xsd">
+    <data timestep="0.00">
+        <lanes/>
+    </data>
+    <data timestep="1.00">
+        <lanes/>
+    </data>
+    <data timestep="2.00">
+        <lanes/>
+    </data>
+    <data timestep="3.00">
+        <lanes/>
+    </data>
+</queue-export>

@@ -1,7 +1,7 @@
 import random
 
 class Memory:
-    def __init(self, size_max, size_min):
+    def __init__(self, size_max, size_min):
         self._samples = []
         self._size_max = size_max
         self._size_min = size_min

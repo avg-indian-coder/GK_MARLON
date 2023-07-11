@@ -12,13 +12,17 @@ from tensorflow.keras.utils import plot_model
 from tensorflow.keras.models import load_model
 
 
+# each model has its own id (for traffic light), rewards (maybe?)
+
 class TrainModel:
-    def __init__(self, num_layers, width, batch_size, learning_rate, input_dim, output_dim):
+    def __init__(self, id, num_layers, width, batch_size, learning_rate, input_dim, output_dim):
+        self._id = id
         self._input_dim = input_dim
         self._output_dim = output_dim
         self._batch_size = batch_size
         self._learning_rate = learning_rate
         self._model = self._build_model(num_layers, width)
+        self._rewards = [] # COMPLETE CODE FOR THIS!!!!!
 
 
     def _build_model(self, num_layers, width):
@@ -64,6 +68,11 @@ class TrainModel:
         """
         self._model.save(os.path.join(path, 'trained_model.h5'))
         plot_model(self._model, to_file=os.path.join(path, 'model_structure.png'), show_shapes=True, show_layer_names=True)
+
+
+    @property
+    def id(self):
+        return self._id
 
 
     @property

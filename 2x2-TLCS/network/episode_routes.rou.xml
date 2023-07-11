@@ -13,7 +13,7 @@
             <route id="S_W" edges="S2TL TL2W"/>
             <route id="S_N" edges="S2TL TL2N"/>
             <route id="S_E" edges="S2TL TL2E"/>
-    <vehicle id="E_S_0" type="standard_car" route="E_S" depart="71.0" departLane="random" departSpeed="10" />
+    <vehicle id="E_S_0" type="standard_car" route="E_S" depart="0.0" departLane="random" departSpeed="10" />
     <vehicle id="W_E_1" type="standard_car" route="W_E" depart="94.0" departLane="random" departSpeed="10" />
     <vehicle id="E_W_2" type="standard_car" route="E_W" depart="98.0" departLane="random" departSpeed="10" />
     <vehicle id="E_W_3" type="standard_car" route="E_W" depart="114.0" departLane="random" departSpeed="10" />
